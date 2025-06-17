@@ -6,6 +6,7 @@ import { UserResponseDto } from "./dto/user-response.dto";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @ApiTags("Users")
+@UseGuards(JwtAuthGuard)
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -17,7 +18,6 @@ export class UsersController {
     status: 200,
     type: [UserResponseDto],
   })
-  @UseGuards(JwtAuthGuard)
   @Get()
   getAllUsers() {
     return this.usersService.findAll();
@@ -26,7 +26,6 @@ export class UsersController {
   @ApiOperation({
     summary: "Creation of the user",
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 200,

@@ -2,10 +2,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { UUIDV4 } from "sequelize";
 import { UUID } from "sequelize";
 import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { UserRole } from "src/roles/roles";
 
 interface UserCreationAttrs {
   email: string;
   password: string;
+  role: UserRole;
 }
 
 @Table({
@@ -50,4 +52,13 @@ export class User extends Model<User, UserCreationAttrs> {
     type: DataType.STRING,
   })
   declare name: string;
+
+  @ApiProperty({
+    example: "user",
+    enum: ["user", "admin", "superadmin"],
+  })
+  @Column({
+    type: DataType.STRING,
+  })
+  declare role: UserRole;
 }

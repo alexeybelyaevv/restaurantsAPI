@@ -15,4 +15,7 @@ export class UserResponseDto {
 
   @ApiProperty()
   updatedAt: string;
+
+  @ApiProperty()
+  role: string;
 }

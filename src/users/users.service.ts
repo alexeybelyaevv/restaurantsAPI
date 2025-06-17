@@ -8,7 +8,7 @@ import * as bcrypt from "bcryptjs";
 export class UsersService {
   constructor(@InjectModel(User) private userRepository: typeof User) {}
 
-  async createUser({ password, email }: CreateUserDto) {
+  async createUser({ password, email, role }: CreateUserDto) {
     const user = await this.getUserByEmail(email);
 
     if (user) {
@@ -19,6 +19,7 @@ export class UsersService {
     return await this.userRepository.create({
       email,
       password: hashedPassword,
+      role,
     });
   }
 
