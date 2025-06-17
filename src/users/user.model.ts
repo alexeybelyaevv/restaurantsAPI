@@ -32,7 +32,7 @@ export class User extends Model<User, UserCreationAttrs> {
     unique: true,
     allowNull: false,
   })
-  email: string;
+  declare email: string;
 
   @ApiProperty({
     example: "strongpassword123",
@@ -41,7 +41,7 @@ export class User extends Model<User, UserCreationAttrs> {
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  declare password: string;
 
   @ApiProperty({
     example: "fake_name",
@@ -49,5 +49,5 @@ export class User extends Model<User, UserCreationAttrs> {
   @Column({
     type: DataType.STRING,
   })
-  name: string;
+  declare name: string;
 }

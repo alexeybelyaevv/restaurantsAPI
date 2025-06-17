@@ -4,7 +4,7 @@ import { User } from "src/users/user.model";
 import { LoginDto } from "./dto/login.dto";
 import { UsersService } from "src/users/users.service";
 import { JwtService } from "@nestjs/jwt";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import { NotFoundException, UnauthorizedException } from "@nestjs/common";
 
 @Injectable()
@@ -19,6 +19,8 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException("No such user");
     }
+
+    console.log(user.dataValues);
 
     const passwordEquals = await bcrypt.compare(password, user.password);
     if (!passwordEquals) {
