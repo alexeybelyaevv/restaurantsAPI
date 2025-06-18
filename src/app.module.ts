@@ -4,6 +4,10 @@ import { UsersModule } from "./users/users.module";
 import { ConfigModule } from "@nestjs/config";
 import { User } from "./users/user.model";
 import { AuthModule } from "./auth/auth.module";
+import { ReservationsModule } from "./reservations/reservations.module";
+import { RestaurantsModule } from "./restaurants/restaurants.module";
+import { Restaurant } from "./restaurants/restaurant.model";
+import { Reservation } from "./reservations/reservation.model";
 
 @Module({
   controllers: [],
@@ -20,11 +24,13 @@ import { AuthModule } from "./auth/auth.module";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User],
+      models: [User, Restaurant, Reservation],
       autoLoadModels: true,
     }),
     UsersModule,
     AuthModule,
+    ReservationsModule,
+    RestaurantsModule,
   ],
 })
 export class AppModule {}
