@@ -1,19 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { User } from "./user.model";
-import { InjectModel } from "@nestjs/sequelize";
+import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcryptjs";
 import { ROLE_VALUES } from "src/common/enums";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User) private userRepository: typeof User) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
     const email = process.env.ADMIN_EMAIL;
-    const existingUser = await this.userRepository.findOne({
-      where: { email },
-    });
+    if (!email) {
+      console.log("No Admin Info In ENV");
+      return;
+    }
+    const existingUser = await this.getUserByEmail(email);
 
     if (existingUser) {
       console.log(
@@ -21,7 +22,7 @@ export class UsersService {
       );
     } else {
       const newUser = await this.createUser({
-        email: "admin@gmail.com",
+        email: email,
         password: String(process.env.ADMIN_PASSWORD),
         role: ROLE_VALUES.superadmin,
       });
@@ -38,21 +39,30 @@ export class UsersService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 5);
-    return await this.userRepository.create({
-      email,
-      password: hashedPassword,
-      role,
+    return await this.prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role,
+      },
     });
   }
 
   async findAll() {
-    return this.userRepository.findAll({
-      attributes: { exclude: ["password"] },
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
   async getUserByEmail(email: string) {
-    return this.userRepository.findOne({
+    return this.prisma.user.findUnique({
       where: {
         email,
       },

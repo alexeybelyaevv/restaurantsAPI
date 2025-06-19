@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsIn, IsString, MinLength } from "class-validator";
-import { Role } from "src/common/enums";
+import { Role } from "@prisma/client";
 
 export class CreateUserDto {
   @ApiProperty({ example: "user@example.com" })
@@ -12,9 +12,9 @@ export class CreateUserDto {
   @MinLength(6, { message: "Password must be at least 6 characters" })
   readonly password: string;
 
-  @ApiProperty({ example: "user", enum: ["user", "admin", "superadmin"] })
+  @ApiProperty({ example: "user", enum: Role })
   @IsString({ message: "Role must be a string" })
-  @IsIn(["user", "admin", "superadmin"], {
+  @IsIn(Object.values(Role), {
     message: "Role must be one of: user, admin, superadmin",
   })
   readonly role: Role;

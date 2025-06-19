@@ -1,13 +1,10 @@
 import { Module } from "@nestjs/common";
-import { SequelizeModule } from "@nestjs/sequelize";
 import { UsersModule } from "./users/users.module";
 import { ConfigModule } from "@nestjs/config";
-import { User } from "./users/user.model";
 import { AuthModule } from "./auth/auth.module";
 import { ReservationsModule } from "./reservations/reservations.module";
 import { RestaurantsModule } from "./restaurants/restaurants.module";
-import { Restaurant } from "./restaurants/restaurant.model";
-import { Reservation } from "./reservations/reservation.model";
+import { PrismaModule } from "./prisma/prisma.module";
 
 @Module({
   controllers: [],
@@ -17,16 +14,7 @@ import { Reservation } from "./reservations/reservation.model";
       envFilePath: `.${process.env.NODE_ENV}.env`,
       isGlobal: true,
     }),
-    SequelizeModule.forRoot({
-      dialect: "postgres",
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
-      models: [User, Restaurant, Reservation],
-      autoLoadModels: true,
-    }),
+    PrismaModule,
     UsersModule,
     AuthModule,
     ReservationsModule,

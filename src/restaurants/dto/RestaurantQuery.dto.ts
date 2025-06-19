@@ -1,12 +1,7 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, IsPositive } from "class-validator";
 import { Type } from "class-transformer";
-import {
-  ORDER_FIELDS,
-  Order,
-  RESTAURANT_FIELDS,
-  RestaurantOrderBy,
-} from "../../common/enums";
+import { Prisma } from "generated/prisma";
 
 export class RestaurantsQueryDto {
   @ApiPropertyOptional({ example: 1, description: "Page number (1-based)" })
@@ -24,20 +19,20 @@ export class RestaurantsQueryDto {
   limit?: number = 10;
 
   @ApiPropertyOptional({
-    example: ORDER_FIELDS.DESC,
-    enum: Object.values(ORDER_FIELDS),
+    example: "desc",
+    enum: ["asc", "desc"],
     description: "Sort order",
   })
   @IsOptional()
-  @IsEnum(ORDER_FIELDS)
-  order?: Order = ORDER_FIELDS.DESC;
+  @IsEnum(["asc", "desc"])
+  order?: Prisma.SortOrder = "desc";
 
   @ApiPropertyOptional({
     example: "createdAt",
-    enum: RESTAURANT_FIELDS,
+    enum: ["createdAt", "updatedAt", "name", "address", "priceRange"],
     description: "Field to sort by",
   })
   @IsOptional()
-  @IsEnum(RESTAURANT_FIELDS)
-  field?: RestaurantOrderBy = "createdAt";
+  field?: keyof Prisma.RestaurantOrderByWithRelationInput =
+    "createdAt" as keyof Prisma.RestaurantOrderByWithRelationInput;
 }

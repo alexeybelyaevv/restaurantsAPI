@@ -8,10 +8,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { InjectModel } from "@nestjs/sequelize";
 import { ApiOperation, ApiQuery, ApiResponse } from "@nestjs/swagger";
-import { UserResponseDto } from "src/users/dto/user-response.dto";
-import { Restaurant } from "./restaurant.model";
 import { RestaurantsService } from "./restaurants.service";
 import {
   Order,

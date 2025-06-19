@@ -1,5 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+class PriceDto {
+  @ApiProperty({ example: 5000 })
+  amount: number;
+
+  @ApiProperty({ example: 6000 })
+  included_amount: number;
+}
+
 export class ReservationResponseDto {
   @ApiProperty({ example: "c1d1a7b3-8a76-4e12-bb12-ccb123456789" })
   id: string;
@@ -11,18 +19,10 @@ export class ReservationResponseDto {
   end: Date;
 
   @ApiProperty({ example: "c1d1a7b3-8a76-4e12-bb12-ccb123456789" })
-  restaurant_id: string;
+  restaurantId: string;
 
-  @ApiProperty({
-    example: {
-      amount: 5000,
-      included_amount: 6000,
-    },
-  })
-  price: {
-    amount: number;
-    included_amount: number;
-  };
+  @ApiProperty({ type: PriceDto })
+  price: PriceDto;
 
   @ApiProperty({ example: "Dinner" })
   mealtime: string;
@@ -31,5 +31,5 @@ export class ReservationResponseDto {
   size: number;
 
   @ApiProperty({ example: "xyz" })
-  details: string;
+  details?: string;
 }

@@ -6,6 +6,7 @@ import {
   IsInt,
   Min,
   ValidateNested,
+  IsOptional,
 } from "class-validator";
 import { Type } from "class-transformer";
 
@@ -32,7 +33,7 @@ export class CreateReservationDto {
 
   @ApiProperty({ example: "f223e8d7-ccef-4f90-8bbf-738d2f238b0e" })
   @IsUUID()
-  restaurant_id: string;
+  restaurantId: string;
 
   @ApiProperty({
     example: { amount: 5000, included_amount: 6000 },
@@ -53,5 +54,6 @@ export class CreateReservationDto {
 
   @ApiProperty({ example: "xyz" })
   @IsString()
-  details: string;
+  @IsOptional()
+  details?: string;
 }

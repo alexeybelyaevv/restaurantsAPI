@@ -1,18 +1,30 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString, IsEnum, IsArray } from "class-validator";
+import { PriceRange } from "generated/prisma";
 
 export class EditRestaurantDto {
-  @ApiProperty({ example: "Test Restaurant" })
-  name: string;
+  @ApiPropertyOptional({ example: "Test Restaurant" })
+  @IsOptional()
+  @IsString()
+  name?: string;
 
-  @ApiProperty({ example: "A great place for delicious Italian food." })
-  description: string;
+  @ApiPropertyOptional({ example: "A great place for delicious Italian food." })
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-  @ApiProperty({ example: "$$" })
-  price_range: "$" | "$$" | "$$$" | "$$$$";
+  @ApiPropertyOptional({ example: PriceRange.CHEAP, enum: PriceRange })
+  @IsOptional()
+  @IsEnum(PriceRange)
+  priceRange?: PriceRange;
 
-  @ApiProperty({ type: [String], example: ["italian", "pizza"] })
-  tags: string[];
+  @ApiPropertyOptional({ type: [String], example: ["italian", "pizza"] })
+  @IsOptional()
+  @IsArray()
+  tags?: string[];
 
-  @ApiProperty({ type: [String], example: ["Lunch", "Dinner"] })
-  mealtimes: string[];
+  @ApiPropertyOptional({ type: [String], example: ["Lunch", "Dinner"] })
+  @IsOptional()
+  @IsArray()
+  mealtimes?: string[];
 }
