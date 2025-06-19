@@ -17,9 +17,7 @@ export class UsersService {
     const existingUser = await this.getUserByEmail(email);
 
     if (existingUser) {
-      console.log(
-        `User with email ${email} already exists (id=${existingUser.id})`
-      );
+      console.log(`Admin already exists (id=${existingUser.id})`);
     } else {
       const newUser = await this.createUser({
         email: email,
