@@ -3,6 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateRestaurantDto } from "./dto/CreateRestaurant.dto";
 import { EditRestaurantDto } from "./dto/EditRestaurant.dto";
 import { Order, RestaurantOrderBy } from "src/common/enums";
+import { Restaurant } from "generated/prisma";
 
 @Injectable()
 export class RestaurantsService {
@@ -11,6 +12,7 @@ export class RestaurantsService {
   async findRestaurants(
     page = 1,
     limit = 10,
+    search = "",
     field?: RestaurantOrderBy,
     order?: Order
   ) {
@@ -18,22 +20,58 @@ export class RestaurantsService {
     const safeLimit = Math.max(1, limit);
     const skip = (safePage - 1) * safeLimit;
 
-    const [total, data] = await this.prisma.$transaction([
-      this.prisma.restaurant.count(),
-      this.prisma.restaurant.findMany({
-        take: safeLimit,
-        skip,
-        orderBy: {
-          ...(field && order ? { [field]: order } : {}),
-        },
-      }),
-    ]);
+    if (!search || search.trim().length === 0) {
+      const [total, data] = await this.prisma.$transaction([
+        this.prisma.restaurant.count(),
+        this.prisma.restaurant.findMany({
+          take: safeLimit,
+          skip,
+          orderBy: field && order ? { [field]: order } : {},
+        }),
+      ]);
+
+      return {
+        data,
+        total,
+        page,
+        pageCount: Math.ceil(total / safeLimit),
+      };
+    }
+
+    const searchTerm = search.trim();
+
+    const data = await this.prisma.$queryRaw<
+      Array<Restaurant & { rank: number }>
+    >`
+      SELECT *,
+        GREATEST(
+          similarity(name, ${searchTerm}),
+          similarity(address, ${searchTerm}),
+          similarity(description, ${searchTerm})
+        ) AS rank
+      FROM "Restaurant"
+      WHERE
+        name % ${searchTerm}
+        OR address % ${searchTerm}
+        OR description % ${searchTerm}
+      ORDER BY rank DESC
+      LIMIT ${safeLimit} OFFSET ${skip}
+    `;
+
+    const total = await this.prisma.$queryRawUnsafe<number>(`
+      SELECT COUNT(*)::int
+      FROM "Restaurant"
+      WHERE
+        name % '${searchTerm}'
+        OR address % '${searchTerm}'
+        OR description % '${searchTerm}'
+    `);
 
     return {
       data,
-      total,
+      total: total?.[0]?.count || 0,
       page,
-      pageCount: Math.ceil(total / safeLimit),
+      pageCount: Math.ceil((total?.[0]?.count || 0) / safeLimit),
     };
   }
 

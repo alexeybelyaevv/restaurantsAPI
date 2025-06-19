@@ -39,13 +39,21 @@ export class RestaurantsController {
   @ApiQuery({ name: "limit", required: false, example: 10 })
   @ApiQuery({ name: "field", required: false, enum: RESTAURANT_FIELDS })
   @ApiQuery({ name: "order", required: false, enum: ORDER_FIELDS })
+  @ApiQuery({ name: "search", required: false, example: "Restaurant 1" })
   findRestaurants(
     @Query("page") page?: number,
     @Query("limit") limit?: number,
     @Query("field") field?: RestaurantOrderBy,
-    @Query("order") order?: Order
+    @Query("order") order?: Order,
+    @Query("search") search?: string
   ) {
-    return this.restaurantsService.findRestaurants(page, limit, field, order);
+    return this.restaurantsService.findRestaurants(
+      page,
+      limit,
+      search,
+      field,
+      order
+    );
   }
 
   @Post()
