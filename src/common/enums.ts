@@ -1,3 +1,16 @@
+export const RESERVATION_FIELDS = {
+  start: "start",
+  end: "end",
+  restaurantId: "restaurantId",
+  mealtime: "mealtime",
+  size: "size",
+  details: "details",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+} as const;
+
+export type ReservationOrderBy = keyof typeof RESERVATION_FIELDS;
+
 export const RESTAURANT_FIELDS = {
   name: "name",
   address: "address",
