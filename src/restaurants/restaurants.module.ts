@@ -12,7 +12,12 @@ import { JwtModule } from "@nestjs/jwt";
   imports: [
     SequelizeModule.forFeature([Restaurant]),
     forwardRef(() => Reservation),
-    JwtModule,
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.SECRET,
+        signOptions: { expiresIn: "24h" },
+      }),
+    }),
   ],
 })
 export class RestaurantsModule {}

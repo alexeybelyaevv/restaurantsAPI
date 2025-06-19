@@ -17,3 +17,11 @@ export const ORDER_FIELDS = {
 } as const;
 
 export type Order = (typeof ORDER_FIELDS)[keyof typeof ORDER_FIELDS];
+
+export const ROLE_VALUES = {
+  user: "user",
+  admin: "admin",
+  superadmin: "superadmin",
+} as const;
+
+export type Role = (typeof ROLE_VALUES)[keyof typeof ROLE_VALUES];

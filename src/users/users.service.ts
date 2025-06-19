@@ -3,10 +3,32 @@ import { User } from "./user.model";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcryptjs";
+import { ROLE_VALUES } from "src/common/enums";
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User) private userRepository: typeof User) {}
+
+  async onModuleInit() {
+    const email = process.env.ADMIN_EMAIL;
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      console.log(
+        `User with email ${email} already exists (id=${existingUser.id})`
+      );
+    } else {
+      const newUser = await this.createUser({
+        email: "admin@gmail.com",
+        password: String(process.env.ADMIN_PASSWORD),
+        role: ROLE_VALUES.superadmin,
+      });
+
+      console.log(`Created default admin user (id=${newUser.id})`);
+    }
+  }
 
   async createUser({ password, email, role }: CreateUserDto) {
     const user = await this.getUserByEmail(email);
