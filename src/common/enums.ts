@@ -37,10 +37,3 @@ export const ROLE_VALUES = {
 } as const;
 
 export type Role = (typeof ROLE_VALUES)[keyof typeof ROLE_VALUES];
-
-export enum PriceRange {
-  CHEAP = "CHEAP",
-  MODERATE = "MODERATE",
-  EXPENSIVE = "EXPENSIVE",
-  LUXURY = "LUXURY",
-}

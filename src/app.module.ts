@@ -11,7 +11,7 @@ import { PrismaModule } from "./prisma/prisma.module";
   providers: [],
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: `.env`,
       isGlobal: true,
     }),
     PrismaModule,

@@ -26,7 +26,7 @@ model User {
   password  String
   name      String?
   role      Role     @default(user)
-
+  reservations Reservation[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -39,28 +39,38 @@ enum PriceRange {
   LUXURY
 }
 
+enum ReservationStatus {
+  free
+  pending
+  paid
+  cancelled
+}
+
 model Reservation {
-  id            String      @id @default(uuid())
+  id            String      @id @default(uuid()) @db.Uuid
   start         DateTime
   end           DateTime
-  restaurantId  String
+  restaurantId  String @db.Uuid
   restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
+  userId String? @db.Uuid
+  user    User?  @relation(fields: [userId], references: [id])
   price         Json
   mealtime      String
   size          Int
   details       String?
+  status ReservationStatus @default(free)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
 model Restaurant {
-  id          String        @id @default(uuid())
+  id          String        @id @default(uuid()) @db.Uuid
   name        String 
   address     String
   description String?
   priceRange  PriceRange
-  tags        String[]
-  mealtimes   String[]
+  tags        String[] @default([])
+  mealtimes   String[] @default([])
   lat         Float
   long        Float
   reservations Reservation[]

@@ -1,5 +1,14 @@
 import { ReservationsService } from "./reservations.service";
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import {
@@ -51,7 +60,13 @@ export class ReservationsController {
   }
 
   @Post()
-  createRestaurant(@Body() dto: CreateReservationDto) {
+  createReservation(@Body() dto: CreateReservationDto) {
     return this.reservationsService.createReservation(dto);
+  }
+
+  @Patch("add-to-cart:id")
+  addToCart(@Req() req: any, @Query("id") id: string) {
+    const userId = req.user.id;
+    return this.reservationsService.addToCart(id, userId);
   }
 }
