@@ -94,4 +94,17 @@ export class ReservationsService {
 
     return reservation;
   }
+
+  async getMyReservations(userId: string) {
+    if (!userId) {
+      throw new BadRequestException("User ID is required");
+    }
+
+    const reservations = await this.prisma.reservation.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return reservations;
+  }
 }

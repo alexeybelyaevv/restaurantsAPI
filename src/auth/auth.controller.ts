@@ -1,12 +1,27 @@
-import { Body, Controller, Get, Header, HttpCode, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  HttpCode,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
+import { UsersService } from "src/users/users.service";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService
+  ) {}
 
   @HttpCode(200)
   @ApiOperation({
@@ -25,8 +40,9 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  // @Get("me")
-  // me(@Header headers) {
-  //   return;
-  // }
+  @Get("me")
+  @UseGuards(JwtAuthGuard)
+  me(@Req() req: any) {
+    return this.usersService.getUserById(req.user.id);
+  }
 }

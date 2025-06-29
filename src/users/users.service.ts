@@ -66,4 +66,21 @@ export class UsersService {
       },
     });
   }
+
+  async getUserById(id: string) {
+    if (!id) {
+      throw new HttpException(
+        "User Is not authenticated",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      omit: {
+        password: true,
+      },
+    });
+  }
 }

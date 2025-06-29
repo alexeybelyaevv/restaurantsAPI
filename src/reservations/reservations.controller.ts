@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -64,9 +65,15 @@ export class ReservationsController {
     return this.reservationsService.createReservation(dto);
   }
 
-  @Patch("add-to-cart:id")
-  addToCart(@Req() req: any, @Query("id") id: string) {
+  @Patch("add-to-cart/:id")
+  addToCart(@Req() req: any, @Param("id") id: string) {
     const userId = req.user.id;
     return this.reservationsService.addToCart(id, userId);
+  }
+
+  @Get("my-reservations")
+  getMyReservations(@Req() req: any) {
+    const userId = req.user.id;
+    return this.reservationsService.getMyReservations(userId);
   }
 }
