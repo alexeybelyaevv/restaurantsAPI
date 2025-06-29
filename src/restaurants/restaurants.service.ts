@@ -97,4 +97,34 @@ export class RestaurantsService {
 
     return updated;
   }
+
+  async getNearestRestaurants(lat: number, long: number, radiusKm = 5) {
+    if (!lat || !long) {
+      throw new BadRequestException("Invalid latitude or longitude.");
+    }
+
+    return this.prisma.$queryRawUnsafe<Restaurant[]>(
+      `
+  SELECT *, (
+    6371 * acos(
+      cos(radians($1)) * cos(radians(lat)) *
+      cos(radians(long) - radians($2)) +
+      sin(radians($1)) * sin(radians(lat))
+    )
+  ) AS distance
+  FROM "Restaurant"
+  WHERE (
+    6371 * acos(
+      cos(radians($1)) * cos(radians(lat)) *
+      cos(radians(long) - radians($2)) +
+      sin(radians($1)) * sin(radians(lat))
+    )
+  ) < $3
+  ORDER BY distance
+  `,
+      lat,
+      long,
+      radiusKm
+    );
+  }
 }

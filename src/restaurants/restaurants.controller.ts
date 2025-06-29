@@ -67,4 +67,13 @@ export class RestaurantsController {
   editRestaurant(@Param("id") id: string, @Body() dto: EditRestaurantDto) {
     return this.restaurantsService.editRestaurant(id, dto);
   }
+
+  @Get("nearest")
+  getNearestRestaurants(
+    @Query("lat") lat: number,
+    @Query("long") long: number,
+    @Query("radius") radius: number
+  ) {
+    return this.restaurantsService.getNearestRestaurants(lat, long, radius);
+  }
 }
